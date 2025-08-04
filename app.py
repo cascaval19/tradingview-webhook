@@ -9,7 +9,7 @@ ALPACA_API_KEY = os.getenv("ALPACA_API_KEY")
 ALPACA_SECRET_KEY = os.getenv("ALPACA_SECRET_KEY")
 BASE_URL = "https://paper-api.alpaca.markets"
 
-@app.route('/', methods=['POST'])
+@app.route('/', methods=['GET'])
 def webhook():
     data = request.json
     print("Received data:", data)
