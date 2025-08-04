@@ -1,4 +1,4 @@
-from flask import Flask, request
+from flask import Flask, request, jsonify
 import requests
 import os
 
@@ -11,31 +11,34 @@ BASE_URL = "https://paper-api.alpaca.markets"
 
 @app.route('/', methods=['POST'])
 def webhook():
-    data = request.json
-    print("Received data:", data)
+    data = request.json
+    print("Received data:", data)
 
-    if data and 'ticker' in data and 'action' in data:
-        symbol = data['ticker']
-        side = data['action'].lower()
+    if data and 'ticker' in data and 'action' in data:
+        symbol = data['ticker']
+        side = data['action'].lower()
 
-        order = {
-            "symbol": symbol,
-            "qty": 1,
-            "side": side,
-            "type": "market",
-            "time_in_force": "gtc"
-        }
+        order = {
+            "symbol": symbol,
+            "qty": 1,
+            "side": side,
+            "type": "market",
+            "time_in_force": "gtc"
+        }
 
-        response = requests.post(
-            f"{BASE_URL}/v2/orders",
-            json=order,
-            headers={
-                "APCA-API-KEY-ID": ALPACA_API_KEY,
-                "APCA-API-SECRET-KEY": ALPACA_SECRET_KEY
-            }
-        )
+        response = requests.post(
+            f"{BASE_URL}/v2/orders",
+            json=order,
+            headers={
+                "APCA-API-KEY-ID": ALPACA_API_KEY,
+                "APCA-API-SECRET-KEY": ALPACA_SECRET_KEY
+            }
+        )
 
-        print("Alpaca response:", response.json())
-        return {"status": "Order sent", "alpaca_response": response.json()}
-    
-    return {"error": "Invalid data"}, 400
+        print("Alpaca response:", response.json())
+        return jsonify({"status": "Order sent", "alpaca_response": response.json()})
+
+    return jsonify({"error": "Invalid data"}), 400
+
+if __name__ == "__main__":
+    app.run(debug=True)
