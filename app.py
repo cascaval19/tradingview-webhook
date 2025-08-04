@@ -4,7 +4,7 @@ import os
 
 app = Flask(__name__)
 
-# Cheile Alpaca - vor fi setate în Render ca Environment Variables
+# Cheile Alpaca – vor fi setate în Render ca Environment Variables
 ALPACA_API_KEY = os.getenv("ALPACA_API_KEY")
 ALPACA_SECRET_KEY = os.getenv("ALPACA_SECRET_KEY")
 BASE_URL = "https://paper-api.alpaca.markets"
@@ -26,13 +26,16 @@ def webhook():
             "time_in_force": "gtc"
         }
 
-        r = requests.post(f"{BASE_URL}/v2/orders",
-                          json=order,
-                          headers={
-                              "APCA-API-KEY-ID": ALPACA_API_KEY,
-                              "APCA-API-SECRET-KEY": ALPACA_SECRET_KEY
-                          })
+        response = requests.post(
+            f"{BASE_URL}/v2/orders",
+            json=order,
+            headers={
+                "APCA-API-KEY-ID": ALPACA_API_KEY,
+                "APCA-API-SECRET-KEY": ALPACA_SECRET_KEY
+            }
+        )
 
-        return {"status": "Order sent", "alpaca_response": r.json()}
-
+        print("Alpaca response:", response.json())
+        return {"status": "Order sent", "alpaca_response": response.json()}
+    
     return {"error": "Invalid data"}, 400
